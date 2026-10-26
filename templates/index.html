@@ -1,0 +1,56 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>AI-Powered Resume Analyzer</title>
+    <link rel="stylesheet"
+          href="{{ url_for('static', filename='style.css') }}">
+</head>
+<body>
+<main class="container">
+    <header class="top">
+        <div>
+            <p class="eyebrow">FREE NLP RESUME ANALYSIS</p>
+            <h1>AI-Powered Resume Analyzer</h1>
+            <p class="subtitle">
+                Compare your resume with a job description and discover
+                your strengths and missing skills.
+            </p>
+        </div>
+        <a href="{{ url_for('history') }}">View History</a>
+    </header>
+
+    {% if error %}
+        <div class="alert">{{ error }}</div>
+    {% endif %}
+
+    <section class="card">
+        <h2>Analyze Your Resume</h2>
+
+        <form method="POST" enctype="multipart/form-data">
+            <label for="resume">Upload Resume (PDF/DOCX)</label>
+            <input type="file" id="resume" name="resume"
+                   accept=".pdf,.docx" required>
+
+            <label for="job_title">Target Job Title</label>
+            <input type="text" id="job_title" name="job_title"
+                   placeholder="e.g. Python Developer" required>
+
+            <label for="job_description">Job Description</label>
+            <textarea id="job_description" name="job_description"
+                      rows="10"
+                      placeholder="Paste the complete job description..."
+                      required></textarea>
+
+            <button type="submit">Analyze Resume</button>
+        </form>
+    </section>
+
+    <p class="footnote">
+        Runs locally using Python NLP libraries. No paid API is required.
+    </p>
+</main>
+</body>
+</html>

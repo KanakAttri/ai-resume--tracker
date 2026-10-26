@@ -1,0 +1,131 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Resume Analysis Results</title>
+    <link rel="stylesheet"
+          href="{{ url_for('static', filename='style.css') }}">
+</head>
+<body>
+<main class="container">
+    <header class="top">
+        <div>
+            <p class="eyebrow">ANALYSIS COMPLETE</p>
+            <h1>Resume Analysis Results</h1>
+        </div>
+        <a href="{{ url_for('history') }}">View History</a>
+    </header>
+
+    <section class="card">
+        <p><strong>Resume:</strong> {{ filename }}</p>
+        <p><strong>Target Job:</strong> {{ job_title }}</p>
+        <p><strong>Analysis ID:</strong> {{ analysis_id }}</p>
+    </section>
+
+    <div class="two-col">
+        <section class="card score-card">
+            <p class="eyebrow">SKILL MATCH</p>
+            <div class="score">{{ result.skill_match }}<span>%</span></div>
+            <div class="progress">
+                <div class="progress-bar"
+                     style="width: {{ result.skill_match }}%"></div>
+            </div>
+            <p>
+                {{ result.matched_count }} out of
+                {{ result.required_count }} recognized required skills matched.
+            </p>
+        </section>
+
+        <section class="card score-card">
+            <p class="eyebrow">TEXT SIMILARITY</p>
+            <div class="score">
+                {{ result.semantic_similarity }}<span>%</span>
+            </div>
+            <p>TF-IDF and cosine similarity between resume and job description.</p>
+        </section>
+    </div>
+
+    {% if result.required_count == 0 %}
+        <div class="alert">
+            No recognized skills were found in the job description.
+            Include specific requirements such as Python, SQL, Flask or Git.
+        </div>
+    {% endif %}
+
+    <div class="two-col">
+        <section class="card">
+            <h2>Matched Skills</h2>
+            <div class="chips">
+                {% for skill in result.matched_skills %}
+                    <span class="chip good-chip">{{ skill }}</span>
+                {% else %}
+                    <p>No matched skills detected.</p>
+                {% endfor %}
+            </div>
+        </section>
+
+        <section class="card">
+            <h2>Missing Required Skills</h2>
+            <div class="chips">
+                {% for skill in result.missing_skills %}
+                    <span class="chip bad-chip">{{ skill }}</span>
+                {% else %}
+                    <p>No missing recognized skills detected.</p>
+                {% endfor %}
+            </div>
+            <p class="footnote">
+                Only add skills to your resume if you genuinely possess them.
+            </p>
+        </section>
+    </div>
+
+    <section class="card">
+        <h2>Extracted Resume Information</h2>
+
+        <p><strong>Email:</strong>
+            {{ resume.email or "Not detected" }}</p>
+        <p><strong>Phone:</strong>
+            {{ resume.phone or "Not detected" }}</p>
+
+        <h3>Skills Section</h3>
+        <pre class="extract">{{ resume.sections.skills or "No Skills heading detected." }}</pre>
+
+        <h3>Education Section</h3>
+        <pre class="extract">{{ resume.sections.education or "No Education heading detected." }}</pre>
+
+        <h3>Experience Section</h3>
+        <pre class="extract">{{ resume.sections.experience or "No Experience heading detected." }}</pre>
+
+        <h3>Projects Section</h3>
+        <pre class="extract">{{ resume.sections.projects or "No Projects heading detected." }}</pre>
+
+        <h3>Certifications Section</h3>
+        <pre class="extract">{{ resume.sections.certifications or "No Certifications heading detected." }}</pre>
+    </section>
+
+    <section class="card">
+        <h2>Recognized Job Requirements</h2>
+        <div class="chips">
+            {% for skill in result.required_skills %}
+                <span class="chip {% if skill in result.matched_skills %}good-chip{% else %}bad-chip{% endif %}">
+                    {{ skill }}
+                </span>
+            {% else %}
+                <p>No recognized skills found.</p>
+            {% endfor %}
+        </div>
+    </section>
+
+    <div class="actions">
+        <a class="button" href="{{ url_for('index') }}">
+            Analyze Another Resume
+        </a>
+        <a class="button secondary" href="{{ url_for('history') }}">
+            View History
+        </a>
+    </div>
+</main>
+</body>
+</html>
